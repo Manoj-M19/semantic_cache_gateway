@@ -1,0 +1,16 @@
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+# B008 (flake8-bugbear) flags function calls in default arguments as a
+# general Python anti-pattern — correct in general, but FastAPI's
+# Depends()/dependency-injection system *requires* Depends(...) to be a
+# default argument; that's how it's invoked per-request. This is a
+# documented, intentional exception, not an oversight.
+ignore = ["B008"]
+
+[tool.black]
+line-length = 100
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
