@@ -12,3 +12,17 @@ class UpstreamTimeoutError(Exception):
         self.provider_name = provider_name
         self.timeout_seconds = timeout_seconds
         super().__init__(f"Upstream provider '{provider_name}' exceeded {timeout_seconds}s timeout")
+
+class CoalesceTimeoutError(Exception):
+    """Raised when a follower gives up waiting for the leader handling
+    the same request to produce a result — either the leader is
+    genuinely still slow past max_wait_seconds, or it crashed without
+    ever writing a result. Maps to HTTP 503: a contention/availability
+    problem, distinct from an upstream timeout."""
+
+    def __init__(self, key: str, waited_seconds: float):
+        self.key = key
+        self.waited_seconds = waited_seconds
+        super().__init__(
+            f"Timed out after {waited_seconds:.2f}s waiting for in-flight request '{key}' to complete"
+        )
