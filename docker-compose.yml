@@ -1,0 +1,33 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - API_KEYS=devkey123
+      - LOG_LEVEL=INFO
+      - ENVIRONMENT=development
+      - REDIS_URL=redis://redis:6379/0
+      - QDRANT_URL=http://qdrant:6333
+    depends_on:
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Not yet used by app logic (that's Phase 2) — included now so the
+  # compose file doesn't need to change again once caching lands.
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
