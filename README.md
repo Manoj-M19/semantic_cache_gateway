@@ -84,36 +84,3 @@ turn a new capability on.
 
 Python 3.11+ · FastAPI · Qdrant (vector store) · Redis (coalescing) ·
 spaCy (embeddings) · pytest / pytest-asyncio / fakeredis · Docker
-
-## Project structure
-semcache/
-├── app/
-│ ├── main.py # app assembly, exception handlers, lifespan
-│ ├── config.py # env-driven settings
-│ ├── auth.py # API-key dependency
-│ ├── exceptions.py # UpstreamTimeoutError, CoalesceTimeoutError
-│ ├── logging_config.py # structured JSON logging
-│ ├── schemas.py # request/response contracts
-│ ├── dependencies.py # DI wiring — the "what's real" file
-│ ├── redis_client.py # Redis singleton (coalescing)
-│ ├── sse.py # Server-Sent Events formatting
-│ ├── utils.py # shared helpers
-│ ├── llm/
-│ │ ├── base.py # UpstreamLLMProvider interface
-│ │ └── mock_provider.py # deterministic mock, no real API cost
-│ ├── services/
-│ │ ├── cache_service.py # CacheService interface + NoOp impl
-│ │ ├── vector_service.py # VectorService interface
-│ │ ├── qdrant_vector_service.py # Qdrant + spaCy implementation
-│ │ ├── semantic_cache_service.py # ties cache + vector service together
-│ │ └── coalescer.py # SingleFlight pattern (Redis + NoOp)
-│ └── routers/
-│ ├── health.py
-│ ├── gateway.py # POST /v1/chat/completions
-│ └── cache_admin.py # cache management endpoints
-├── tests/ # 22 tests across 5 files
-├── pyproject.toml # ruff + black config
-├── Dockerfile
-├── docker-compose.yml # app + redis + qdrant
-├── requirements.txt / requirements-dev.txt
-└── .env.example
